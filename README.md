@@ -1,30 +1,32 @@
-PS: I used a custom webfonts. please note the flow: Font Size 23M
+### Usage:
 
-Introduction:
+Download all the files and open `index.html` by any browser (e.g., Chrome).
 
-Xiaosong Rong @DataMining Team in Lagou.com
+#### Using another fonts:
 
-# Main work:
+* 1. Download the [fonts](https://www.dropbox.com/s/lel0mpn9uqdiy9g/fonts.zip?dl=0)
+* 2. Decompress the zip and put the folder `fonts` in the current path.
+* 3. Reopen/Refresh `index.html`.
 
-* personalized recommendation
-* user interest modeling & position recommendation
+
+### Author
+
+* Author: Xiaosong Rong
+* Email: rongxiaosong [AT] gmail.com
 
 
-# Why this presentation ?
+### Why this presentation ?
 
-* Python is one the main two languages (another is Java)
-* Several projects are developed in Python at DataMining team.
-* Transfer to Python from other languages (e.g., Java) may feel not comfortable with 
+* Transfer to Python from other languages (e.g., Java) may feel not comfortable with
 the different syntax, even more important, the ecosystem and philosophy.
 
-# Target audience:
+### Target audience:
 
 * People who interested in Python.
 * People who are not familiar with Python yet, but want to.
 * People who want to talk about Python with me (and others).
 
-This talk is all about Python, but not a toturial.
+!! This talk is all about Python, but not a toturial.
 
 - by Xiaosong Rong
-- 2015/10/22
-
+- 2015/10/26

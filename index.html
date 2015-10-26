@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Idiomatic Python</title>
+    <link rel="stylesheet" href="css/default.css" media="screen">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle, inverse, center
+```
+             _   _              -
+ _ __  _   _| |_| |__   ___  _ __
+| '_ \| | | | __| '_ \ / _ \| '_ \
+ | |_) | |_| | |_| | | | (_) | | | |
+ | .__/ \__, |\__|_| |_|\___/|_| |_|
+|_|    |___/                     _
+
+```
+
+# Idiomatic Python
+### by Xiaosong Rong
+### [rongxiaosong@gmail.com](mailto:rongxiaosong@gmail.com)
+### [link](https://github.com/ghostrong/idiomatic_python)
+2015.10.23
+---
+class: inverse
+
+## Outline
+### Python Ecosystem
+### Python Coding Style
+### Logging in Python
+### Testing in Python
+### Improving the Performance
+---
+class: center, middle, inverse
+# Python Ecosystem
+---
+class: inverse
+## Learning Python
+### Books
+
+* [A Byte of Python](http://www.swaroopch.com/notes/python/)
+* [Learn Python the Hard Way](http://learnpythonthehardway.org/book/)
+
+### Documents
+* [python.org](https://www.python.org/)
+* [The Python Tutorial](https://docs.python.org/2/tutorial/index.html)
+* [http://docs.python-guide.org/en/latest/](http://docs.python-guide.org/en/latest/)
+
+### Courses
+* [Coursera](https://www.coursera.org/courses/?query=python)
+
+### Funny
+* [PythonChallenge](http://www.pythonchallenge.com/)
+
+### Golden Rule
+* Get your hands dirty!
+---
+class: inverse
+## The version confusion
+### **Reason**: Python3 is different from Python2 according to the syntax.
+### Conclusion: Python2 is the status quo, Python3 is the future.
+
+### Why not move to Python3
+
+* not comfortable with the new syntax
+* legacy projects
+* 3rd packages dependency
+* 任性
+
+### Python2.7: no new features, just fix bugs
+
+### Golden Rule
+
+* choose Python2.7.10 if no good reasons
+* Python2: >Python2.7.9
+* Python3: >Python3.4
+
+---
+class: inverse
+## The Python VM
+### CPython: implemented in C
+
+* the most popular
+* the default
+
+### PyPy: implemented in Python
+### Jython: implemented in Java
+### IronPython: for .NET CLR
+
+### Golden Rule: choose CPython 2.7.10
+
+---
+class: inverse
+## Installing 3rd party packages
+### python tools: pip, easy_install, etc.
+````
+$ pip install requests
+$ easy_install requests
+````
+### using the package management system (e.g, apt-get, yum, etc)
+```
+$ apt-get install python-mysqldb
+```
+
+### installing from the source files
+````
+$ python setup.py install
+````
+
+### Golden Rule: [pip](https://pip.readthedocs.org/en/stable/)
+---
+class: inverse
+## The Development Environment
+### Virtualenv: creating isolated Python environment
+### your projects may require different dependencies and versions
+
+````
+$ pip install virtualenv
+$ virtualenv env
+$ source env/bin/activate
+(env)$ deactivate
+````
+
+### Basic dependency management
+```
+$ pip freeze -l >requirements.txt
+$ cat requirements.txt
+Jinja2==2.6
+$ pip install -r requirements.txt
+```
+---
+class: inverse
+## Other Development tools
+### Editors
+
+* Vim + configs + plugins
+* notepad++  + plugins
+* sublime + plugins
+* eclipse + plugins
+* PyCharm
+
+### Source Checking
+
+* [Pyflakes](https://github.com/pyflakes/pyflakes)
+
+````
+$ cat t.py
+print a
+$ pyflakes t.py
+t.py:2: undefined name 'a'
+````
+
+* [Pylint](http://www.pylint.org/)
+
+````
+$ pylint -E t.py
+````
+---
+class: inverse
+## More
+### PaaS: [Google App Engine](https://developers.google.com/appengine/), [Heroku](http://www.heroku.com/), [SAE](sae.sina.com.cn), [BAE](http://bce.baidu.com/product/bae.html)
+### Python Teams
+* [pocoo](http://www.pocoo.org/projects/): Sphinx, Flask, Jinja2, Pygments, Werkzeug, etc.
+* [Guido van Rosssum](https://www.python.org/~guido/): Creator of Python
+* [Kenneth Reitz](https://github.com/kennethreitz): requests, python-guide, legit, etc.
+* [Daniel](http://www.pydanny.com/): expert in Python, Django
+
+### Organizations Using Python
+* Google
+* Youtube
+* Quora
+* Dropbox
+* Douban
+* Zhihu
+
+---
+class: center, middle, inverse
+# Python Coding Style
+---
+class: inverse
+## encoding
+### Defining the source code encoding
+* the first(or second) line of a source file
+`#coding:utf8`
+
+### encoding & decoding
+````
+>>> s_uni = u'中国'
+>>> s_str = s_ui.encode('utf8')   # unicode -> str
+>>> s_uni = s_str.decode('utf8')  # str -> unicode
+````
+
+### Golden Rules
+* defining the source code encoding as **utf8**
+* using **unicode** in programs
+* using **utf8** when saving to files
+
+---
+class: inverse
+## Whitespace
+#### * 4 spaces per indentation level (no hard tabs)
+#### * two blank lines between functions & classes
+#### * one blank line between methods & logic units
+#### ...
+
+## Naming
+#### * joined_lower for functions, methods, attributes
+#### * joined_lower or ALL_CAPS for constants
+#### * StudlyCaps for classes
+#### * camelCase only for conventions
+#### * attributes: interface, _private
+---
+class: inverse
+## Breaking long lines
+### using blackslashes (ugly)
+````
+>>> x = 1 + 2 + 3 + 4 + 5 + \
+...     6 + 7
+>>> text = 'hello world, hello \
+... china'
+````
+### using parentheses (better)
+````
+>>> x = (1 + 2 + 3 + 4 + 5 +
+...     6 + 7)
+
+>>> text = ('hello world, hello'
+...        'china')
+````
+---
+class: inverse
+## Formatting Strings
+### using "%" (sometimes ugly)
+````
+>>> 'name:%s, weight:%.2f' % ('football', 0.9986)
+'name:football, weight:1.00'
+````
+
+### using ".format" (better)
+````
+>>> 'name:{name}, weight:{weight:.2f}'.format(
+... weight=0.9986, name='football')
+'name:football, weight:1.00'
+
+>>> '{}={}'.format('name', 'cedar')
+'name=cedar'
+
+>>> '{:0>4d}{:0>2d}{:0>2d}'.format(2015, 1, 5)
+'20150105'
+````
+
+### recommended reading: [python-string-format](https://mkaz.github.io/2012/10/10/python-string-format/)
+
+---
+class: inverse
+## List Comprehensions
+````
+res = []
+for i in xrange(10):
+    if i % 2 == 0:
+        res.append(i ** i)
+````
+
+Better:
+````
+res = [i * i for i in xrange(10) if i % 2 == 0]
+````
+
+## Lambda
+````
+>>> square = lambda x: x*x
+>>> square(10)
+100
+>>> mylist = range(5)
+>>> mylist.sort(key=lambda x:-x)
+>>> mylist
+[4, 3, 2, 1, 0]
+````
+---
+class: inverse
+## Dictionaries
+````
+>>> mydict = dict([('a',1), ('b', 2)])
+>>> mydict
+{'a': 1, 'b': 2}
+
+>>> mylist = sorted(mydict.iteritems(),
+... key=lambda x:-x[1])
+>>> mylist
+[('b', 2), ('a', 1)]
+
+>>> mylist = mydict.items()
+>>> mylist.sort(key=lambda x:-x[1])
+>>> mylist
+[('b', 2), ('a', 1)]
+
+>>> mydict.setdefault('c', 10)
+10
+>>> mydict
+{'a': 1, 'c': 10, 'b': 2}
+
+````
+---
+class: inverse
+## Classes
+### new-style classes vs. old-style classes(or classic classes)
+#### old-style classes
+````
+class Person:
+    pass
+
+class Student(Person):
+    pass
+````
+
+### new-style classes
+````
+class Person(object):
+    pass
+
+class Student(Person):
+    pass
+````
+---
+class: inverse
+## New Style Classes vs. Old Style Classes
+### In old-style classes:
+````
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+class Student(Person):
+    def __init__(self, name, age, no):
+        Person.__init__(self, name, age)
+        self.no = no
+
+s = Student('cedar', 20, 1)
+
+````
+---
+class: inverse
+## New Style Classes vs. Old Style Classes
+### In new-style classes
+````
+class Person(object):
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+class Student(Person):
+    def __init__(self, name, age, no):
+        super(Student, self).__init__(name, age)
+        # Or
+        #super(self.__class__, self).__init__(name, age)
+        self.no = no
+
+s = Student('cedar', 20, 1)
+
+````
+---
+class: inverse
+## namedtuple
+````
+class Position(object):
+    def __init__(self, id, title, salary, city):
+        self.id = id
+        self.title = title
+        self.salary = salary
+        self.city = city
+
+````
+
+#### Using namedtuple  (improving the readability and efficiency)
+````
+from collections import namedtuple
+Position = namedtuple('Position',
+                      ['id', 'title', 'salary', 'city'])
+
+data = [1, 'SDE', '20k-30k', u'北京']
+pos = Position(*data)
+# Or: pos = Position._make(data)
+assert pos[1] == pos.title
+assert pos[2] == pos.salary
+````
+---
+class: inverse
+## Subprocess management
+````
+>>> subprocess.call(["ls", "-l"])
+0
+>>> subprocess.call("exit 1", shell=True)
+1
+````
+### Executing commands in a subshell.
+### Using [subprocess](https://docs.python.org/2/library/subprocess.html)
+### Deprecated: os.system, os.spawn*, os.popen, os.popen2, os.popen3, commands
+
+---
+class: inverse
+## Generators
+
+### yield
+
+### Example1 (not using generator)
+````
+def load_data1(input_file):
+    items = []
+    with open(input_file) as f:
+        for line in f:
+            item = process_line(line)
+            items.append(item)
+    return items
+
+items = load_data1('input.txt')
+for item in items:
+    print item
+````
+---
+class: inverse
+## Generators
+### Example2 (using generator)
+````
+def load_data2(input_file):
+    with open(input_file) as f:
+        for line in f:
+            item = process_line(line)
+            yield item
+
+item_generator = load_data2('input.txt')
+for item in item_generator:
+    print item
+
+
+````
+---
+class: inverse
+## Generators
+###  Implementing Fibonacci Sequence
+
+````
+def fib():
+    a, b = 0, 1
+    while True:
+        yield b
+        a, b = b, a + b
+
+fiber = fib()
+
+# printing the first 10 fibnacci numbers
+for i in xrange(10):
+    print fiber.next()
+````
+
+---
+class: inverse
+## Generators
+
+### More examples
+
+````
+>>> x = (i*i for i in [1, 2, 3])
+>>> x
+<generator object <genexpr> at 0x7fa9dd49c280>
+
+>>> sum([i * i for i in xrange(100)])
+328350
+
+>>> sum(i * i for i in xrange(100))
+328350
+
+````
+
+### Golden Rules
+#### * Use a list comprehension when a computed list is the desired end result.
+#### * Use a generator expression when the computed list is just an intermediate step.
+---
+class: inverse
+## Decorators
+````
+def decorator(func):
+    def wrapper(*args, **kwargs):
+        print 'before running "%s"' % (func.__name__)
+        res = func(*args, **kwargs)
+        print 'after running "%s"' % (func.__name__)
+        return res
+    return wrapper
+
+@decorator
+def echo(text):
+    print text
+
+echo('hello world')
+````
+
+Output:
+
+<pre>
+before running "echo"
+hello world
+after running "echo"
+</pre>
+---
+class: inverse
+## Usage of Decorators
+### Example1: Timeing your functions
+````
+import time
+
+def cost_logged(func):
+    def wrapper(*args, **kwargs):
+        t_start = time.time()
+
+        res = func(*args, **kwargs)
+
+        cost = time.time() - t_start
+        print 'Finish %s, cost: %.2f secs' % (
+               func.__name__, cost)
+        return res
+    return wrapper
+
+@cost_logged
+def sleep(n=0.1):
+    time.sleep(n)
+
+````
+---
+class: inverse
+
+## Usage of Decorators
+### Example2: Caching the time-consuming results
+````
+import urllib2
+
+def simple_cache(func):
+    cache = {}
+    def wrapper(key, *args, **kwargs):
+        if key in cache:
+            return cache[key]
+
+        value = func(key, *args, **kwargs)
+        cache[key] = value
+        return value
+    return wrapper
+
+@simple_cache
+def get_page(url):
+    text = urllib2.urlopen(url).read()
+    return text
+````
+---
+class: inverse
+## Importing
+### Don't use wild-card imports
+
+#### Don't
+````
+from datetime import *
+now = datetime.now()
+````
+
+#### Do
+````
+from datetime import datetime
+now = datetime.now()
+
+# Or
+import datetime
+now = datetime.datetime.now()
+
+# Or
+import datetime as date
+now = date.datetime.now()
+````
+---
+class: inverse
+## Importing
+### Importing one module per-line
+
+#### Don't
+````
+import time, json, os
+````
+
+#### Do
+````
+import time
+import json
+import os
+````
+
+#### Importing Orders
+* standard libs
+* 3rd party packages
+* self-defined packages/modules
+---
+class: inverse
+## Documentation
+
+### Shipping with the source code.
+### Written in raw text(txt) or markups such as Markdown and reStructuredText.
+### Important components of the documentation:
+* an introduction (like a README)
+* dependent packages: requirements.txt
+* a tutorial
+* an API reference
+* developer documentation
+
+### Documentation for company projects:
+* REAME(the most important): installation, basic usage, dependent packages/software, system constraints
+* the summary design and the detailed design
+* experimental results
+
+### Recommended reading: [Documendation](http://docs.python-guide.org/en/latest/writing/documentation/), [Spinx](http://sphinx.pocoo.org/)
+
+---
+class: inverse
+## Modules & Scripts
+
+### Module Structure:
+````
+"""module docstring"""
+
+# imports
+# constants
+# exception classes
+# interface functions
+# classes
+# internal functions
+# internal classes
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()
+````
+---
+class: inverse
+#### Package Structure
+````
+package/
+    __init__.py
+    module1.py
+    module2.py
+    tests/
+    subpackage/
+        __init__.py
+        module3.py
+````
+
+#### Real-world Projects
+````
+recommendation/
+    README.md
+    bin/
+    conf/
+    tests/
+    recommendataion/
+        __init__.py
+        module1.py
+````
+---
+class: inverse
+## Other important things about coding style
+#### * comments
+#### * length of a line
+#### * small function: do and only do one thing per function
+#### * many tricks about Python data models
+#### * ...
+### Always check the Python [documents](https://docs.python.org/2/).
+
+---
+class: center, middle, inverse
+# Logging in Python
+---
+class: inverse
+## using [logging](https://docs.python.org/2/library/logging.html)
+
+### What to log?
+#### * DEBUG:
+Detailed information for debugging
+#### * INFO:
+Tracing the execution, confirming that things are working well
+#### * WARNING:
+Something unexpected happened, but the software is working well.
+#### * ERROR:
+Not working well, but still running (lost part of functions)
+#### * CRITICAL:
+Unable to continue running.
+---
+class: inverse
+## Logging: a simple example
+````
+import logging
+logging.basicConfig(filename='example.log',
+                    format='%(levelname)s:%(message)s',
+                    level=logging.DEBUG
+                    )
+logging.debug('this is a debug msg')
+logging.info('this is an info msg')
+logging.error('this is an error')
+````
+
+### **format**: defining the formats，supporting *levelname*, *asctime*, *filename*, *lineno*, etc.
+
+### only config once and using cross multiple modules
+---
+class: inverse
+## Logging: another example
+
+````
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+fhandler = logging.FileHandler('test.log')
+fhandler.setLevel(logging.DEBUG)
+formatter = logging.Formatter(
+    '[%(asctime)s][%(levelname)s][%(message)s]'
+)
+fhandler.setFormatter(formatter)
+logger.addHandler(fhandler)
+logger.info('this is an info msg')
+logger.error('this is an error')
+````
+
+### Important Components: loggers, handlers, filters, formatters
+---
+class: inverse, middle, center
+## [logging flow](image/logging_flow.png)
+---
+class: inverse
+## Real-world Logging
+### Senario 1: split log msgs by level
+e.g., one file for logs of DEBUG, INFO, another file for logs of WRANING, ERROR, CRITICAL
+#### [implementation example](https://github.com/ghostrong/utils/blob/master/filter_logger.py)
+
+### Senario 2: logging in multiprocessing
+logging package is thread-safe, not process-safe!
+#### Keypoint: synchronization
+#### one-solution: using queue
+#### [implementation example](https://github.com/ghostrong/utils/blob/master/queue_logger.py)
+remark: logging in Python3 providing a new QueueHandler
+---
+class: inverse
+## Real-world Logging
+
+### recording the traceback info for exception handling
+````
+try:
+    print a
+except NameError as e:
+    logging.exception()
+````
+
+<pre>
+[ERROR][2015-10-16 15:04:22,033][global name 'a' is not defined]
+Traceback (most recent call last):
+    File "example_logging_exception.py", line 30, in main
+        print a
+NameError: global name 'a' is not defined
+</pre>
+
+### one log msg per line: implementing a OnelineFormatter
+#### [implementation example](https://github.com/ghostrong/utils/blob/master/example_logging_exception.py)
+---
+class: inverse
+## Logging: development notes
+
+### choosing Python2.7.10(or 2.7.9)
+
+### In Python2.7.3 and before:
+* the main components are defined as Classic-Style classes
+* the formatter not supporting "funcName"
+
+### What if the 3rd party packages replying on logging (3 possible solutions)
+* logging.raiseExceptions = False
+* logging.getLogger().addHandler(logging.NullHandler())
+* config loggers for the 3rd party packages
+
+### Recommended readings:
+#### [logging tutorial](https://docs.python.org/2/howto/logging.html#logging-basic-tutorial)
+#### [logging cookbook](https://docs.python.org/2/howto/logging-cookbook.html#logging-cookbook)
+
+---
+class: center, middle, inverse
+# Testing in Python
+---
+class: inverse
+## Unit Testing
+### What is unit testing?
+* a software testing method by witch individual units of source code are tested.
+* a unit is often an individual method.
+
+### Python unit testing framework: [unittest](https://docs.python.org/2/library/unittest.html)
+
+````
+import unittest
+
+class TestStringMethods(unittest.TestCase):
+
+  def test_upper(self):
+      self.assertEqual('foo'.upper(), 'FOO')
+
+  def test_isupper(self):
+      self.assertTrue('FOO'.isupper())
+
+if __name__ == '__main__':
+    unittest.main()
+````
+---
+class: inverse
+## unittest
+### the list of assert methods
+![assert methods](image/unittest_asserts.png)
+
+---
+class: inverse
+## unittest
+### Using setUp() and tearDown()
+
+````
+import sqlite3
+import unittest
+
+class TestSqlite(unittest.TestCase):
+    def setUp(self):
+        self.conn = sqlite3.connect('example.db')
+
+    def tearDown(self):
+        self.conn.close()
+
+    def test_create_table(self):
+        # do something
+
+    def test_insert(self):
+        # do something
+
+    def test_select(self):
+        # do something
+
+````
+---
+class: inverse
+## unittest
+### Command-Line Interface
+
+````
+python -m unittest test_sqlite
+python -m unittest test_sqlite.TestSqlite
+python -m unittest test_sqlite.TestSqlite.test_select
+````
+
+### Test Discovery: defining the directory and the pattern to match test files.
+
+````
+$ python -m unittest discover -s project_folder \
+> -p "test_*.py"
+````
+
+### Comments: not bad, but not good enough
+### Other choices: [py.test](http://pytest.org/), [Nose](https://nose.readthedocs.org/en/latest/)
+---
+class: inverse
+## py.test
+
+### Recommended reading:
+* [why I use py.test](http://halfcooked.com/presentations/pyconau2013/why_I_use_pytest.html)
+* [pytest introduction](http://pythontesting.net/framework/pytest/pytest-introduction/)
+
+````
+$ pip install pytest
+````
+
+````
+def test_upper():
+  assert 'foo'.upper() == 'FOO'
+
+def test_isupper():
+  assert 'FOO'.isupper()
+  assert not 'Foo'.isupper()
+````
+
+### Run
+```
+$ py.test
+# Or
+$ py.test test_str.py
+```
+---
+class: inverse
+## py.test: features
+### * Just using "assert"
+### * more controls for "setup" and "teardown"
+````
+def setup_module(module):
+    pass
+
+def teardown_module(module):
+    pass
+
+def setup_function(func):
+    pass
+
+def teardown_function(func):
+    pass
+````
+---
+class: inverse
+## py.test: features
+### * more controls for "setup" and "teardown"
+````
+class TestExample:
+    def setup(self):
+        pass
+
+    def teardown(self):
+        pass
+
+    def setup_class(cls):
+        pass
+
+    def teardown_class(cls)
+        pass
+
+    def setup_method(self, method):
+        pass
+
+    def teardown_method(self, method):
+        pass
+````
+---
+class: inverse
+## py.test: features
+### Test discovery
+* naming test modules/files starting with "test_"
+* naming test functions starting with "test_"
+* naming test classes starting with "Test"
+
+### [pytest fixtures](http://pytest.org/latest/fixture.html#fixtures)
+#### * example use case: fixtures as function arguments
+````
+import pytest
+
+@pytest.fixture
+def smtp():
+    import smtplib
+    return smtplib.SMTP('smtp.gmail.com')
+
+def test_something(smtp):
+    ...
+````
+---
+class: inverse
+## py.test: features
+### adding conftest.py: sharing fixtures across multiple modules/files
+
+#### content of conftest.py:
+````
+import pytest
+import smtplib
+
+@pytest.fixture
+def smtp():
+    return smtplib.SMTP("smtp.gmail.com")
+````
+
+#### content of test_smtp.py:
+````
+def test_something(smtp):
+    ...
+````
+---
+class: inverse
+## python unit testing
+### Golden Rules: shipping with the source
+````
+flask/
+    docs/
+    examples/
+    flask/
+    tests/
+    setup.py
+````
+
+### Make the application code importable
+````
+$ pip install -e .   # needing setup.py
+$ py.test
+````
+
+#### Or
+
+````
+$ PYTHONPATH=.; py.test
+
+````
+
+---
+class: center, middle, inverse
+# Improving the Performance
+---
+class: inverse
+## Analyzing python performance
+### Premature optimization is the root of all evil -- Donald Knuth
+### How could you find the bottlenecks?
+* logging
+* experience
+* guess & tossing a coin :)
+* profiling
+
+### A profile is a set of statistics that describes how often and for how long various parts of the program executed.
+#### * [cProfile/profile](https://docs.python.org/2/library/profile.html)
+#### * [line_profiler](https://github.com/rkern/line_profiler)
+#### * [memory_profiler](https://github.com/fabianp/memory_profiler)： monitor memory usage
+---
+class: inverse
+## Profile Python
+#### a simple example(example.py):
+
+````
+import math
+import random
+
+def run():
+    for i in xrange(10000):
+        x = random.randint(1, 10000000)
+        _ = math.log(x)
+
+if __name__ == '__main__':
+    run()
+````
+
+### Profiling the code:
+
+````
+$ python -m cProfile example.py
+````
+
+#### the profiling report: [report](image/example_profile.png)
+---
+class: inverse
+## More about bottlenecks
+
+### Be careful with the followings:
+* CPU-Bound operations
+* IO block (filesystem, database, network, etc.)
+
+### Common tips
+#### * IO block -> batch writing, multithreading, multiprocessing, coroutines
+#### * compute intensive -> multiprocessing
+#### * CPU-Bount unit -> rewriting in C
+---
+class: inverse
+## Multiprocessing
+### Understanding the [GPL](https://docs.python.org/2/glossary.html#term-global-interpreter-lock) in Python
+* global-interpreter-lock used by CPython
+* multiple threads cannot take advantage of multi-cores
+
+### [multiprocessing](https://docs.python.org/2/library/multiprocessing.html)
+````
+import multiprocessing as mp
+
+def worker(name):
+    # do something
+
+if __name__ == '__main__':
+    p = mp.Process(target=worker, args=(i,))
+    p.start()
+    p.join()
+````
+
+### consider synchronization, communications between different processes
+---
+class: inverse
+## IO blocks
+
+### * batch writing (using buffer, delayed write)
+### * [threading](https://docs.python.org/2/library/threading.html#module-threading): the APIs are similar with [multiprocessing](https://docs.python.org/2/library/multiprocessing.html)
+### * coroutines: [gevent](http://www.gevent.org/), other event-driven packages
+---
+class: inverse
+## C extensions
+### [ctypes](https://docs.python.org/2/library/ctypes.html): provides C compatible data types
+### [cython](http://cython.org/)(not [CPython](https://github.com/python/cpython)): a programming language
+* like a superset of Python
+* supporting static type declarations
+* translated into optimized C/C++ code
+* compiled as Python extension modules
+
+### [Pyrex](https://wiki.python.org/moin/Pyrex): a Python-like language
+* with C data types
+* as fast as in C
+
+### Using the existed C packages
+---
+class: inverse
+## Last words about performance
+### * writing the code smartly, e.g., avoid for-loops
+### * using the right tools, e.g., numpy/scipy for computing, gevent for event-driven work, packages implemented in C
+### * appropriate data structures
+### * cache
+### Recommended book: [high-performance-python](http://ianozsvald.com/HighPerformancePythonfromTrainingatEuroPython2011_v0.2.pdf)
+---
+class: inverse, middle, center
+## Awesome Python
+
+---
+class: inverse
+## Other Important Tools
+### * [scientific computing:](javascript:void) numpy, scipy
+### * [machine learning:](javascript:void) scikit-learn, pylearn2, matplotlib
+### * [topic modeling:](javascript:void) gensim
+### * [crawlers:](javascript:void) urllib2, requests, scrapy
+### * [web framework:](javascript:void) Django, Flask, Tornado, etc.
+### * [object-relational mappers(ORMs):](javascript:void) SQLAlchemy
+### * [search engines:](javascript:void) whoosh, pylucene, sphinx
+### More: [awesome-python](https://github.com/vinta/awesome-python)
+
+---
+class: inverse
+## Need help?
+### * Documents: [python](https://docs.python.org/2/), [readthedocs](https://github.com/ghostrong/utils/wiki/readthedocs.org)
+### * communities, [pycon](http://www.pycon.org/)
+### * [StackOverflow](http://stackoverflow.com/): 481,730 questions tagged python
+### * [Github](https://github.com/): useful packages, example projects, *code snippets"etc.
+### [google](https://www.google.com): search for exceptions, packages, tutorials, and anything else.
+
+---
+class: inverse
+## Final Words
+### When to break the rules/conventions?
+````
+>>> import this
+````
+
+![The Zen Of Python](image/zen_of_python.png)
+---
+class: inverse
+## Reference
+* [Code Like a Pythonista: Idiomatic Python](http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html#id15)
+
+* [Intermediate and Advanced Software Carpentry in Python](http://ivory.idyll.org/articles/advanced-swc/)
+
+* [The Hitchhiker’s Guide to Python!](http://docs.python-guide.org/en/latest/)
+
+* [Python Glossary](https://docs.python.org/2/glossary.html)
+
+* [Logging Cookbook](https://docs.python.org/dev/howto/logging-cookbook.html#logging-to-a-single-file-from-multiple-processes)
+
+* [Good logging practice in python](http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python)
+
+* [FullStackPython](http://www.fullstackpython.com/)
+
+* [Filesystem structure of a Python project](http://jcalderone.livejournal.com/39794.html)
+
+* [Python Performance Analysis](http://www.huyng.com/posts/python-performance-analysis/)
+
+* [Pocoo Style Guide](http://www.pocoo.org/internal/styleguide/#styleguide)
+
+* [Google Python Style](https://google-styleguide.googlecode.com/svn/trunk/pyguide.html)
+
+* [PEP 0008: Style Guide for Python](https://www.python.org/dev/peps/pep-0008/)
+---
+class: center, middle, inverse
+# Q &amp; A
+---
+class: center, middle, inverse
+# Thanks
+#### Made in [Remark](http://remarkjs.com)
+    </textarea>
+    <script src="js/remark.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var slideshow = remark.create({
+        highlightStyle: 'monokai',
+        highlightLanguage: 'remark'
+      });
+    </script>
+  </body>
+</html>

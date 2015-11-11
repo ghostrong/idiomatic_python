@@ -737,13 +737,13 @@ class: inverse
 ## Real-world Logging
 ### Senario 1: split log msgs by level
 e.g., one file for logs of DEBUG, INFO, another file for logs of WRANING, ERROR, CRITICAL
-#### [implementation example](https://github.com/ghostrong/utils/blob/master/filter_logger.py)
+#### [implementation example](code/filter_logger.py)
 
 ### Senario 2: logging in multiprocessing
 logging package is thread-safe, not process-safe!
 #### Keypoint: synchronization
 #### one-solution: using queue
-#### [implementation example](https://github.com/ghostrong/utils/blob/master/queue_logger.py)
+#### [implementation example](code/queue_logger.py)
 remark: logging in Python3 providing a new QueueHandler
 ---
 class: inverse
@@ -766,7 +766,7 @@ NameError: global name 'a' is not defined
 </pre>
 
 ### one log msg per line: implementing a OnelineFormatter
-#### [implementation example](https://github.com/ghostrong/utils/blob/master/example_logging_exception.py)
+#### [implementation example](code/example_logging_exception.py)
 ---
 class: inverse
 ## Logging: development notes
